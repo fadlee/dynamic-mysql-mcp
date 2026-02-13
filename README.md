@@ -12,6 +12,24 @@ Model Context Protocol (MCP) server for MySQL, enabling AI assistants to query a
 - 🧾 Custom SQL execution (`execute_sql`) with optional parameters
 - 🌐 MCP resources for table schema discovery
 
+## Why Dynamic (vs static MySQL MCP servers)
+
+Many MySQL MCP servers are configured statically (fixed host/user/password via env or config file). This project is intentionally dynamic.
+
+- Runtime auth via tool calls (`auth_mysql`) instead of requiring credentials at server boot
+- Switch database context during a session using `use_database` (or per-call database override)
+- Work across multiple databases/environments from one running MCP server session
+- Better fit for agent workflows where connection details change per task
+- No required auth environment variables for normal use
+
+| Capability | Dynamic MySQL MCP Server | Typical static MySQL MCP |
+| --- | --- | --- |
+| Credentials | Provided at runtime with `auth_mysql` | Fixed in env/config at startup |
+| Environment switching | Re-auth per task/session | Usually restart/reconfigure |
+| Database switching | `use_database` + per-call `database` | Often single default DB |
+| Agent workflow fit | High (task-driven connections) | Medium (preconfigured only) |
+| Secrets handling model | No required auth env vars | Often relies on persistent env secrets |
+
 ## Installation
 
 ```bash
